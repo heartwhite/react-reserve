@@ -1,24 +1,24 @@
-function catchErrors(error, setError) {
-  let errMsg;
+function catchErrors(error, displayError) {
+  let errorMsg;
   if (error.response) {
-    // the request was made and server responded with a statusCode that is not in the range of 2XX
-    errMsg = error.response.data;
-    console.error('Error Response', errMsg);
+    // The request was made and the server responsed with a status code that is not in the range of 2XX
+    errorMsg = error.response.data;
+    console.error("Error response", errorMsg);
 
-    //for cloudinary errors
+    // For Cloudinary image uploads
     if (error.response.data.error) {
-      errMsg = error.response.data.error.message;
+      errorMsg = error.response.data.error.message;
     }
   } else if (error.request) {
-    // the request was made but no response were received
-    errMsg = error.request;
-    console.error('Error Request', errMsg);
+    // The request was made, but no response was received
+    errorMsg = error.request;
+    console.error("Error request", errorMsg);
   } else {
-    //sth else happened in making the request that triggered an error
-    errMsg = error.message;
-    console.error('!!! Error Message:', errMsg);
+    // Something else happened in making the request that triggered an error
+    errorMsg = error.message;
+    console.error("Error message", errorMsg);
   }
-  setError(errMsg);
+  displayError(errorMsg);
 }
 
 export default catchErrors;

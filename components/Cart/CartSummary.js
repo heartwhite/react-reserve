@@ -1,12 +1,12 @@
-import { Button, Segment, Divider } from 'semantic-ui-react';
+import { Button, Segment, Divider } from "semantic-ui-react";
 
 function CartSummary() {
   return (
     <>
       <Divider />
-      <Segment clearing size='large'>
-        <strong>Sub Total:</strong> $0.00
-        <Button floated='right' icon='cart' color='teal' content='Checkout' />
+      <Segment clearing size="large">
+        <strong>Sub total:</strong> $0.00
+        <Button icon="cart" color="teal" floated="right" content="Checkout" />
       </Segment>
     </>
   );

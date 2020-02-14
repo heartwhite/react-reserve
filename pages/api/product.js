@@ -1,17 +1,18 @@
-import Product from "../../models/Product";
-import connectDb from "../../utils/connectDb";
+import Product from '../../models/Product';
+import Cart from '../../models/Cart';
+import connectDb from '../../utils/connectDb';
 
 connectDb();
 
 export default async (req, res) => {
   switch (req.method) {
-    case "GET":
+    case 'GET':
       await handleGetRequest(req, res);
       break;
-    case "POST":
+    case 'POST':
       await handlePostRequest(req, res);
       break;
-    case "DELETE":
+    case 'DELETE':
       await handleDeleteRequest(req, res);
       break;
     default:
@@ -30,23 +31,31 @@ async function handlePostRequest(req, res) {
   const { name, price, description, mediaUrl } = req.body;
   try {
     if (!name || !price || !description || !mediaUrl) {
-      return res.status(422).send("Product missing one or more fields");
+      return res.status(422).send('Product missing one or more fields');
     }
     const product = await new Product({
       name,
       price,
       description,
-      mediaUrl
+      mediaUrl,
     }).save();
     res.status(201).json(product);
   } catch (error) {
     console.error(error);
-    res.status(500).send("Server error in creating product");
+    res.status(500).send('Server error in creating product');
   }
 }
 
 async function handleDeleteRequest(req, res) {
   const { _id } = req.query;
-  await Product.findOneAndDelete({ _id });
-  res.status(204).json({});
+  try {
+    // 1) Delete product by id
+    await Product.findOneAndDelete({ _id });
+    // 2) Remove product from all carts, referenced as 'product'
+    await Cart.updateMany({ 'products.product': _id }, { $pull: { products: { product: _id } } });
+    res.status(204).json({});
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error deleting product');
+  }
 }
